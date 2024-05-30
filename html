@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Average Calculator</title>
+    <script>
+        async function calculateAverage() {
+            const numbers = document.getElementById('numbers').value.split(',').map(Number);
+            const response = await fetch('http://localhost:5000/calculate-average', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json'
+                },
+                body: JSON.stringify({ numbers: numbers })
+            });
+
+            const result = await response.json();
+            if (response.ok) {
+                document.getElementById('result').textContent = `Average: ${result.average}`;
+            } else {
+                document.getElementById('result').textContent = `Error: ${result.error}`;
+            }
+        }
+    </script>
+</head>
+<body>
+    <h1>Average Calculator</h1>
+    <input type="text" id="numbers" placeholder="Enter numbers separated by commas">
+    <button onclick="calculateAverage()">Calculate</button>
+    <p id="result"></p>
+</body>
+</html>
