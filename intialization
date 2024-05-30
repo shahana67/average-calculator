@@ -1,0 +1,6 @@
+//Run in cmd
+
+mkdir average-calculator-backend
+cd average-calculator-backend
+npm init -y
+npm install express body-parser
