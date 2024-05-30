@@ -21,3 +21,9 @@ app.post('/calculate-average', (req, res) => {
 app.listen(port, () => {
     console.log(`Server is running on http://localhost:${port}`);
 });
+
+
+
+
+//Run in cmd
+//node server.js
