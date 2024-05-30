@@ -1,22 +1,39 @@
-from flask import Flask, request, jsonify
+import React, { useState } from 'react';
+import axios from 'axios';
+import './App.css';
 
-app = Flask(__name__)
+function App() {
+    const [numbers, setNumbers] = useState('');
+    const [average, setAverage] = useState(null);
+    const [error, setError] = useState(null);
 
-@app.route('/calculate-average', methods=['POST'])
-def calculate_average():
-    data = request.json
-    if not data or 'numbers' not in data:
-        return jsonify({'error': 'No data provided or missing "numbers" field'}), 400
-    
-    numbers = data['numbers']
-    if not all(isinstance(n, (int, float)) for n in numbers):
-        return jsonify({'error': 'All elements in "numbers" must be int or float'}), 400
-    
-    if not numbers:
-        return jsonify({'error': '"numbers" array is empty'}), 400
+    const calculateAverage = async () => {
+        try {
+            const response = await axios.post('http://localhost:3001/calculate-average', {
+                numbers: numbers.split(',').map(Number)
+            });
+            setAverage(response.data.average);
+            setError(null);
+        } catch (err) {
+            setError(err.response.data.error);
+            setAverage(null);
+        }
+    };
 
-    average = sum(numbers) / len(numbers)
-    return jsonify({'average': average})
+    return (
+        <div className="App">
+            <h1>Average Calculator</h1>
+            <input
+                type="text"
+                value={numbers}
+                onChange={(e) => setNumbers(e.target.value)}
+                placeholder="Enter numbers separated by commas"
+            />
+            <button onClick={calculateAverage}>Calculate Average</button>
+            {average !== null && <h2>Average: {average}</h2>}
+            {error && <h2>Error: {error}</h2>}
+        </div>
+    );
+}
 
-if __name__ == '__main__':
-    app.run(host='0.0.0.0', port=5000)
+export default App;
